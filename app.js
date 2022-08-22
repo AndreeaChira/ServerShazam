@@ -14,7 +14,7 @@ mongoose.connect(uri, { useNewUrlParser: true, useUnifiedTopology: true})
     console.log('error connecting to MongoDB:', error.message)
 })
 
-// var indexRouter = require('./routes/detect');
+var indexRouter = require('./routes/detect');
 var usersRouter = require('./routes/users');
 
 var app = express();
@@ -29,7 +29,7 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-// app.use('/detect', indexRouter);
+app.use('/detect', indexRouter);
 app.use('/users', usersRouter);
 
 // catch 404 and forward to error handler
