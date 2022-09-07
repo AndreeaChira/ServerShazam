@@ -26,6 +26,12 @@ router.post('/detectbyname',async function(req,res,next){
     let data=await detect.searchSong(song);
     res.send(data);
 });
+// get link by name song (author - name)
+router.post('/getlinkbynamesong',async function(req,res,next){
+    let song=req.body.song; 
+    let data=await moodTracks.getLinkbyNameSong(song);
+    res.send(data);
+});
 
 router.post('/tracksByMood',async function(req,res,next){
     const size = req.body.size;
@@ -54,6 +60,42 @@ router.post('/tracksByMood',async function(req,res,next){
         moodTracks.returnTracksByMood(emotion).then((tracks) => {
             res.send(tracks);
         })
+    }).catch(err => {
+        res.status(400).send(err);
+    })
+     .finally(() => {
+        fs.unlinkSync('./b64imgs_emotion', (err) => {
+            if(err) {
+                console.error(err);
+            }
+        });
+    });
+});
+router.post('/trackMood',async function(req,res,next){
+    const size = req.body.size;
+    if(!size) {
+        return res.status(400).send('No images were received');
+    }
+    const imgs = req.body.imgs;
+    if(imgs) {
+        console.log(imgs.length);
+        imgs.forEach((img) => {
+            // get the b64 encoded image.
+            var b64img = img.substring(img.indexOf(',')+1);
+
+            // dump b64img in b64imgs file with ';' delimitator
+            fs.appendFileSync("b64imgs_emotion", b64img+';', function(err) {
+                if(err) {
+                    return res.status(500).send('Couldn\'t dump images for script');
+                }
+            })
+        });
+    }
+    getEmotionByFace('b64imgs_emotion').then((response) => {
+       
+        const emotion = response.slice(0,-1);
+        console.log(emotion);
+        res.send(emotion);
     }).catch(err => {
         res.status(400).send(err);
     })

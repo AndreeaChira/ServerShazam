@@ -40,11 +40,19 @@ async function searchSong(term)
     });
     return data;
 }
+async function getLinkbyNameSong(name)
+{
+  let apiKey='MDc1MmYxZGYtM2IxZS00YWViLThmNmItMDgyNjU3OTA4M2Vk';
+  let url='https://api.napster.com/v2.2/search?apikey='+apiKey+'&query='+name+'&type=track';
+  let response=await axios.get(url);
+  let r=response.data;
+  return r.search.data.tracks[0].previewURL;
+}
 async function main()
 {
-    let data=await searchSong("impossible");
-    console.log(data);
+  let song=await getLinkbyNameSong('Dua Lipa - Don\'t Start Now');
+  console.log(song);
 }
 main();
 
-module.exports = {detectSong,searchSong};
+module.exports = {detectSong,searchSong,getLinkbyNameSong};
