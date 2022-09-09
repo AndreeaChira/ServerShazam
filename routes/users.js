@@ -12,7 +12,7 @@ router.post('/login',async function(req,res,next){
   let data=await user.findOne({email:email,password:password});
   if(data)
   {
-    res.send({message:"Login Successful",data:data});
+    res.send(data);
   }
   else
   {
@@ -70,7 +70,7 @@ router.post('/getsongs',async function(req,res,next){
   let data=await user.findOne({email:email,password:password});
   if(data)
   {
-    res.send({message:"Songs fetched",data:data});
+    res.send(data.songs);
   }
   else
   {
@@ -93,7 +93,7 @@ router.post('/likesong',async function(req,res,next){
     else
     {
       let data=await user.findOneAndUpdate({email:email,password:password},{$push:{likedSongs:{id:id}}});
-      res.send({message:"Song liked",data:data});
+      res.send(data.likedSongs);
     }
   }
   else
